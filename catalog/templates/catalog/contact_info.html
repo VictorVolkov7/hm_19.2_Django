@@ -50,7 +50,7 @@
                 <div class="col-5 mx-auto">
                     <h2>Наши контакты:</h2>
                     <p>
-                        г. Калининград 8-888-77-77-999<br>
+                        г. Калининград {{contacts.phone}}<br>
                         (c 02:00 до 21:00)
                     </p>
                     <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
@@ -58,8 +58,8 @@
                 <div class="col-5 mx-auto">
                     <h2>Мы в социальных сетях:</h2>
                     <p>
-                        ВКонтакте - vk.com/safyros_market<br>
-                        Telegram - tg.me/safyros_market
+                        ВКонтакте - <a href="{{ contacts.vk }}" target="_blank">{{ contacts.vk }}</a><br>
+                        Telegram - {{ contacts.telegram }}
                     </p>
                     <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
                 </div>
