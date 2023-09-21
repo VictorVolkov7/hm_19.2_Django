@@ -1,111 +1,52 @@
-<!doctype html>
-{% load static %}
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Safyro's Market</title>
-
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/jumbotron/">
-
-    <!-- Bootstrap core CSS -->
-    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
-
-</head>
-
-<body>
-
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="#">Safyro's Market</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
-            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="/">Домой</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/contact/">Контакты<span class="sr-only">(current)</span></a>
-            </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
-    </div>
-</nav>
-
-<main role="main">
-
-    <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-        <div class="container mt-3">
-            <div class="row">
-                <div class="col-5 mx-auto">
-                    <h2>Наши контакты:</h2>
-                    <p>
-                        г. Калининград {{contacts.phone}}<br>
-                        (c 02:00 до 21:00)
-                    </p>
-                    <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
-                </div>
-                <div class="col-5 mx-auto">
-                    <h2>Мы в социальных сетях:</h2>
-                    <p>
-                        ВКонтакте - <a href="{{ contacts.vk }}" target="_blank">{{ contacts.vk }}</a><br>
-                        Telegram - {{ contacts.telegram }}
-                    </p>
-                    <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
-                </div>
+{% extends 'catalog/base.html' %}
+{% block content %}
+<!-- Main jumbotron for a primary marketing message or call to action -->
+<div class="jumbotron">
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-5 mx-auto">
+                <h2>Наши контакты:</h2>
+                <p>
+                    г. Калининград {{ object_list.phone }}<br>
+                    (c 02:00 до 21:00)
+                </p>
+                <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
+            </div>
+            <div class="col-5 mx-auto">
+                <h2>Мы в социальных сетях:</h2>
+                <p>
+                    ВКонтакте - {{ object_list.vk }}<br>
+                    Telegram - {{ object_list.telegram }}
+                </p>
+                <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="container">
-        <hr>
-        <div class="row">
-            <div class="col-6 mx-auto">
-                <div class="card">
-                    <div class="card-header mx-auto">
-                        <h5>Оставьте заявку для обратной связи</h5>
-                    </div>
-                    <div class="card-body">
-                        <form method="post">
-                            {% csrf_token %}
+<div class="container">
+    <hr>
+    <div class="row">
+        <div class="col-6 mx-auto">
+            <div class="card">
+                <div class="card-header mx-auto">
+                    <h5>Оставьте заявку для обратной связи</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <label class="col-sm-12">
                             <input type="text" name="name" class="form-control mb-2" placeholder="Имя">
                             <input type="email" name="email" class="form-control mb-2" placeholder="Email">
                             <textarea name="message" class="form-control mb-2"
                                       placeholder="Дополнительная информация"></textarea>
-                            <input class="btn btn-primary w-100" type="submit" value="Send"/>
-                        </form>
-                    </div>
+                        </label>
+                        <input class="btn btn-primary w-100" type="submit" value="Send"/>
+                    </form>
                 </div>
             </div>
         </div>
-
-        <hr>
     </div>
-    </div> <!-- /container -->
-
-</main>
-
-<footer class="container text-center mt-5">
-    <p>&copy; Company 2023</p>
-</footer>
-
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-<script src="/catalog/static/js/popper.min.js"></script>
-<script src="/catalog/static/js/bootstrap.min.js"></script>
-</body>
-</html>
+    <hr>
+</div><!-- /container -->
+{% endblock %}
