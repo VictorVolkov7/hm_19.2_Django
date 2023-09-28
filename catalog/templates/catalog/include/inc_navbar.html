@@ -8,10 +8,14 @@
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link active" href="{% url 'catalog:home_page' %}">Домой</a>
+                <a class="nav-link active" href="{% url 'catalog:product_list' %}">Домой</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active" href="{% url 'catalog:contact_info' %}">Контакты<span
+                        class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'catalog:blog_list' %}">Блог<span
                         class="sr-only">(current)</span></a>
             </li>
         </ul>
