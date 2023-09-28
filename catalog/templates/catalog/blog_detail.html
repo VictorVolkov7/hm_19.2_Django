@@ -1,0 +1,29 @@
+{% extends 'catalog/base.html' %}
+{% load my_tags %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 mt-5">
+                <div class="card mt-3 border-light">
+                    <h2 class="card-header mx-auto">{{ object.slug }}</h2>
+                     <p class="card-text small">Просмотры: {{ object.count_views }}</p>
+                    <div class="row">
+                        <div class="col-5 m-4 mx-auto">
+                            <img src="{% path_tag object.preview %}" width=450 height="280" alt=""/>
+                        </div>
+                        <div class="col-12">
+                            <div class="card-body">
+                                <p class="card-text">
+                                    {{ object.body }}...
+                                </p>
+                            </div>
+                            <p class="card-text float-right mt-4">
+                                {{ object.date_create }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

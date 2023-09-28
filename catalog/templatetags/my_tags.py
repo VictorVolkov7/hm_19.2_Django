@@ -8,6 +8,7 @@ register = template.Library()
 def path_tag(format_string):
     return settings.MEDIA_URL + str(format_string)
 
+
 @register.filter
 def path_filter(text):
     return settings.MEDIA_URL + str(text)

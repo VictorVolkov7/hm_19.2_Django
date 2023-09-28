@@ -1,0 +1,54 @@
+{% extends 'catalog/base.html' %}
+{% load my_tags %}
+{% block content %}
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+        <div class="container">
+            <h1 class="display-3">Важное о главном</h1>
+            <a href="{% url 'catalog:blog_create' %}" class="btn btn-outline-primary">Добавить публикацию</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="pricing-header">
+                <p class="fs-5 text-body-secondary">Лента новостей:</p>
+            </div>
+        </header>
+        <div class="row">
+            <div class="col-12">
+                {% for object in object_list %}
+                    <div class="card mt-3 border-light">
+                        <h4 class="card-header">{{ object.title }}</h4>
+                        <div class="row">
+                            <div class="col-5 m-4">
+                                <img src="{% path_tag object.preview %}" width=450 height="280" alt=""/>
+                                <p class="card-text mt-1 small">Просмотры: {{ object.count_views }}</p>
+                            </div>
+                            <div class="col-6">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        {{ object.body|slice:500 }}...
+                                    </p>
+                                    <p class="card-text">
+                                        {{ object.date_create }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="btn-group float-right">
+                            <a href="{% url 'catalog:blog_detail' object.slug %}" type="button"
+                               class="btn btn-primary btn-outline-primary">View</a>
+                            <a href="{% url 'catalog:blog_update' object.slug %}" type="button"
+                               class="btn btn-primary btn-outline-primary">Edit</a>
+                            <a href="{% url 'catalog:blog_delete' object.slug %}" type="button"
+                               class="btn btn-primary btn-outline-danger">Delete</a>
+                        </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div><!-- /container -->
+{% endblock %}
