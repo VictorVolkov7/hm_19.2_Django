@@ -1,26 +1,47 @@
-from django.shortcuts import render, get_object_or_404
+from django.conf import settings
+from django.core.mail import send_mail
+from django.shortcuts import render
+from django.urls import reverse_lazy, reverse
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from pytils.translit import slugify
 
-from catalog.models import Product, Contacts
+from catalog.models import Product, Contacts, Blog
 
 
-def home_page(request):
-    latest_product = Product.objects.all()
+class ProductListView(ListView):
+    model = Product
 
-    for product in latest_product[:5]:
-        print(product.name)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Главная Safyro's Market"
+        return context
 
-    context = {
-        'object_list': latest_product,
-        'title': "Главная Safyro's Market",
-    }
 
-    return render(request, 'catalog/home_page.html', context)
+class ProductDetailView(DetailView):
+    model = Product
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product_name = context['object'].name
+        context['title'] = f"{product_name} Safyro's Market"
+        return context
+
+
+class ProductCreateView(CreateView):
+    model = Product
+    fields = ('name', 'title', 'preview', 'category', 'price', 'creation_date', 'last_change_date')
+    success_url = reverse_lazy('catalog:product_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f"Создание товара Safyro's Market"
+        return context
 
 
 def contact_info(request):
     contacts_list = Contacts.objects.first()
     context = {
-        'object_list': contacts_list,
+        'object': contacts_list,
         'title': "Контакты Safyro's Market"
     }
 
@@ -32,11 +53,95 @@ def contact_info(request):
     return render(request, 'catalog/contact_info.html', context)
 
 
-def product_page(request, pk):
-    products_list = get_object_or_404(Product, pk=pk)
-    context = {
-        'object_list': products_list,
-        'title': f"{products_list.name} Safyro's Market"
-    }
+class BlogListView(ListView):
+    model = Blog
 
-    return render(request, 'catalog/product_page.html', context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f"Новости Safyro's Market"
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(is_published=True)
+        return queryset
+
+
+class BlogDetailView(DetailView):
+    model = Blog
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        blog_title = context['object'].title
+        context['title'] = f"{blog_title} Safyro's Market"
+        return context
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        self.object.count_views += 1
+
+        if self.object.count_views == 100:
+            self.send_mail()
+
+        self.object.save()
+        return self.object
+
+    def send_mail(self):
+        subject = f"Пост {self.object.title} достиг 100 просмотров"
+        message = 'Поздравляем!!!'
+        from_email = settings.EMAIL_HOST_USER
+        recipient_list = ['vektorn1212@gmail.com']
+
+        send_mail(subject, message, from_email, recipient_list)
+
+
+class BlogCreateView(CreateView):
+    model = Blog
+    fields = ('title', 'body', 'preview', 'date_create', 'is_published')
+    success_url = reverse_lazy('catalog:blog_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f"Создать: Safyro's Market"
+        return context
+
+    def form_valid(self, form):
+        if form.is_valid():
+            new_blog = form.save()
+            new_blog.slug = slugify(new_blog.title)
+            new_blog.save()
+
+        return super().form_valid(form)
+
+
+class BlogUpdateView(UpdateView):
+    model = Blog
+    fields = ('title', 'body', 'preview', 'date_create', 'is_published', 'count_views')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        blog_title = context['object'].title
+        context['title'] = f"Редактировать: {blog_title} Safyro's Market"
+        return context
+
+    def get_success_url(self):
+        return reverse('catalog:blog_detail', args=[self.kwargs.get('pk')])
+
+    def form_valid(self, form):
+        if form.is_valid():
+            new_blog = form.save()
+            new_blog.slug = slugify(new_blog.title[:15])
+            new_blog.save()
+
+        return super().form_valid(form)
+
+
+class BlogDeleteView(DeleteView):
+    model = Blog
+    success_url = reverse_lazy('catalog:blog_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        blog_title = context['object'].title
+        context['title'] = f"Удалить: {blog_title} Safyro's Market"
+        return context
