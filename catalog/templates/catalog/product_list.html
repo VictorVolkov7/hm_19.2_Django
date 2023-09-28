@@ -16,6 +16,7 @@
     </div>
 
     <div class="container">
+    <a href="{% url 'catalog:create_product' %}" class="btn btn-outline-primary">Добавить товар</a>
         <header>
             <div class="pricing-header p-3 pb-md-4 mx-auto">
                 <p class="fs-5 text-body-secondary">Каталог товаров:</p>
@@ -34,7 +35,7 @@
                             <p class="card-text">
                                 {{ object.price }} ₽
                             </p>
-                            <a href="{% url 'catalog:product_page' object.pk %}" class="btn btn-primary float-right">Купить</a>
+                            <a href="{% url 'catalog:product_detail' object.pk %}" class="btn btn-primary float-right">Купить</a>
                         </div>
                     </div>
                 </div>
