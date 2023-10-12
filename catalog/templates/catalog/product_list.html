@@ -16,7 +16,7 @@
     </div>
 
     <div class="container">
-    <a href="{% url 'catalog:create_product' %}" class="btn btn-outline-primary">Добавить товар</a>
+        <a href="{% url 'catalog:create_product' %}" class="btn btn-outline-primary">Добавить товар</a>
         <header>
             <div class="pricing-header p-3 pb-md-4 mx-auto">
                 <p class="fs-5 text-body-secondary">Каталог товаров:</p>
@@ -35,6 +35,13 @@
                             <p class="card-text">
                                 {{ object.price }} ₽
                             </p>
+                            {% for active_version in object.version_set.all %}
+                                {% if active_version.is_active %}
+                                    <p class="text-muted">
+                                    Версия: {{ active_version.version_number }}
+                                    </p>
+                                {% endif %}
+                            {% endfor %}
                             <a href="{% url 'catalog:product_detail' object.pk %}" class="btn btn-primary float-right">Купить</a>
                         </div>
                     </div>
