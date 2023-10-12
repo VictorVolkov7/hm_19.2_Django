@@ -1,0 +1,30 @@
+{% extends 'catalog/base.html' %}
+{% load my_tags %}
+{% block content %}
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-6 mt-5 mx-auto">
+                <div class="card">
+                    <div class="card-header mx-auto">
+                        <div class="card-title">
+                            <h5>
+                                Вы действительно хотите удалить товар {{ object.name }}?
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="card-body mx-auto">
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger">
+                                Да
+                            </button>
+                            <a href="{% url 'catalog:product_detail' object.pk %}" class="btn btn-outline-primary">
+                                Нет
+                            </a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

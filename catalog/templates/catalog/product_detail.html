@@ -3,22 +3,32 @@
 {% block content %}
     <div class="container">
         <div class="row mt-5">
-            <div class="card border-light mt-5">
-                <div class="row g-0">
-                    <div class="col-6">
-                        <img src="{{ object.preview|path_filter }}" alt="..." width="500" height="300"/>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ object.name }}</h5>
-                            <p class="card-text">{{ object.title }}</p>
-                            <p class="card-text"><small
-                                    class="text-body-secondary">{{ object.creation_date }}</small>
-                            </p>
-                            <p class="card-text">
-                                {{ object.price }} ₽
-                            </p>
-                            <a href="#" class="btn btn-primary float-right">Купить</a>
+            <div class="col-6">
+                <a href="{% url 'catalog:product_update' object.pk %}" class="btn btn-outline-primary mt-5 mr-2">
+                    Редактировать
+                </a>
+                <a href="{% url 'catalog:product_delete' object.pk %}" class="btn btn-outline-danger mt-5">
+                    Удалить
+                </a>
+            </div>
+            <div class="col-12">
+                <div class="card border-light mt-5">
+                    <div class="row g-0">
+                        <div class="col-6">
+                            <img src="{{ object.preview|path_filter }}" alt="..." width="500" height="300"/>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ object.name }}</h5>
+                                <p class="card-text">{{ object.title }}</p>
+                                <p class="card-text"><small
+                                        class="text-body-secondary">{{ object.creation_date }}</small>
+                                </p>
+                                <p class="card-text">
+                                    {{ object.price }} ₽
+                                </p>
+                                <a href="#" class="btn btn-primary float-right">Купить</a>
+                            </div>
                         </div>
                     </div>
                 </div>
