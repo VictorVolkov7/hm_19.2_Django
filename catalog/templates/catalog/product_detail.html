@@ -4,18 +4,25 @@
     <div class="container">
         <div class="row mt-5">
             <div class="col-6">
-                <a href="{% url 'catalog:product_update' object.pk %}" class="btn btn-outline-primary mt-5 mr-2">
-                    Редактировать
-                </a>
-                <a href="{% url 'catalog:product_delete' object.pk %}" class="btn btn-outline-danger mt-5">
-                    Удалить
-                </a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'catalog:product_update' object.pk %}" class="btn btn-outline-primary mt-5 mr-2">
+                        Редактировать
+                    </a>
+                    <a href="{% url 'catalog:product_delete' object.pk %}" class="btn btn-outline-danger mt-5">
+                        Удалить
+                    </a>
+                {% endif %}
             </div>
             <div class="col-12">
                 <div class="card border-light mt-5">
                     <div class="row g-0">
                         <div class="col-6">
                             <img src="{{ object.preview|path_filter }}" alt="..." width="500" height="300"/>
+                            {% if object.owner is None %}
+                                <div class="text-muted">-</div>
+                            {% else %}
+                                <div class="text-muted">{{ object.owner }}</div>
+                            {% endif %}
                         </div>
                         <div class="col-md-6">
                             <div class="card-body">
