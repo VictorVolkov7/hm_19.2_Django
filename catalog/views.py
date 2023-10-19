@@ -1,13 +1,15 @@
 from django.conf import settings
+from django.core.cache import cache
 from django.core.mail import send_mail
 from django.forms import inlineformset_factory
-from django.shortcuts import render
+from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from pytils.translit import slugify
 
 from catalog.forms import ProductForm, VersionForm
-from catalog.models import Product, Contacts, Blog, Version
+from catalog.models import Product, Contacts, Blog, Version, Category
+from catalog.services import get_cached_category_list
 
 
 class ProductListView(ListView):
@@ -16,6 +18,8 @@ class ProductListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Главная Safyro's Market"
+        category_list = get_cached_category_list()
+        context['category_list'] = category_list
         return context
 
 
@@ -88,19 +92,21 @@ class ProductDeleteView(DeleteView):
         return context
 
 
-def contact_info(request):
-    contacts_list = Contacts.objects.first()
-    context = {
-        'object': contacts_list,
-        'title': "Контакты Safyro's Market"
-    }
+class ContactInfo(TemplateView):
+    template_name = 'catalog/contact_info.html'
 
-    if request.method == 'POST':
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['object'] = Contacts.objects.first()
+        context_data['title'] = "Контакты Safyro's Market"
+        return context_data
+
+    def post(self, request, *args, **kwargs):
         name = request.POST.get('name')
         email = request.POST.get('email')
         message = request.POST.get('message')
         print(f"{name}({email}):{message}")
-    return render(request, 'catalog/contact_info.html', context)
+        return redirect('catalog:contact_info')
 
 
 class BlogListView(ListView):

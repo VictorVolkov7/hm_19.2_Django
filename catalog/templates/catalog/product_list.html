@@ -17,11 +17,16 @@
 
     <div class="container">
         {% if user.is_authenticated %}
-        	<a href="{% url 'catalog:create_product' %}" class="btn btn-outline-primary">Добавить товар</a>
+            <a href="{% url 'catalog:create_product' %}" class="btn btn-outline-primary">Добавить товар</a>
         {% endif %}
         <header>
             <div class="pricing-header p-3 pb-md-4 mx-auto">
                 <p class="fs-5 text-body-secondary">Каталог товаров:</p>
+                {% for category in category_list %}
+                    <li>
+                        {{ category }}
+                    </li>
+                {% endfor %}
             </div>
         </header>
         <div class="row">
@@ -44,6 +49,7 @@
                                     </p>
                                 {% endif %}
                             {% endfor %}
+                            <li>{{ object.category }}</li>
                             <a href="{% url 'catalog:product_detail' object.pk %}" class="btn btn-primary float-right">Купить</a>
                         </div>
                     </div>
