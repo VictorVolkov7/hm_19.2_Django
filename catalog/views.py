@@ -1,14 +1,15 @@
 from django.conf import settings
-from django.core.cache import cache
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.mail import send_mail
 from django.forms import inlineformset_factory
+from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from pytils.translit import slugify
 
 from catalog.forms import ProductForm, VersionForm
-from catalog.models import Product, Contacts, Blog, Version, Category
+from catalog.models import Product, Contacts, Blog, Version
 from catalog.services import get_cached_category_list
 
 
@@ -57,6 +58,12 @@ class ProductUpdateView(UpdateView):
     model = Product
     form_class = ProductForm
 
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.owner != self.request.user and not self.request.user.has_perm(f'catalog.set_is_published'):
+            raise Http404
+        return self.object
+
     def get_success_url(self):
         return reverse('catalog:product_detail', args=[self.kwargs.get('pk')])
 
@@ -71,6 +78,17 @@ class ProductUpdateView(UpdateView):
             context['formset'] = SubjectFormset(instance=self.object)
 
         return context
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        if self.object.owner != self.request.user:
+            product_fields = [f for f in form.fields.keys()]
+            for field in product_fields:
+                if not self.request.user.has_perm(f'catalog.set_{field}'):
+                    del form.fields[field]
+        else:
+            del form.fields['is_published']
+        return form
 
     def form_valid(self, form):
         formset = self.get_context_data()['formset']
@@ -90,6 +108,12 @@ class ProductDeleteView(DeleteView):
         context = super().get_context_data(**kwargs)
         context['title'] = f"Удаление товара {self.object.title} Safyro's Market"
         return context
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.owner != self.request.user and not self.request.user.has_perm(f'catalog.set_is_published'):
+            raise Http404
+        return self.object
 
 
 class ContactInfo(TemplateView):
@@ -151,9 +175,10 @@ class BlogDetailView(DetailView):
         send_mail(subject, message, from_email, recipient_list)
 
 
-class BlogCreateView(CreateView):
+class BlogCreateView(CreateView, PermissionRequiredMixin):
     model = Blog
     fields = ('title', 'body', 'preview', 'date_create', 'is_published')
+    permission_required = 'catalog.add_blog'
     success_url = reverse_lazy('catalog:blog_list')
 
     def get_context_data(self, **kwargs):
@@ -170,9 +195,10 @@ class BlogCreateView(CreateView):
         return super().form_valid(form)
 
 
-class BlogUpdateView(UpdateView):
+class BlogUpdateView(UpdateView, PermissionRequiredMixin):
     model = Blog
     fields = ('title', 'body', 'preview', 'date_create', 'is_published', 'count_views')
+    permission_required = 'catalog.change_blog'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -192,8 +218,9 @@ class BlogUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class BlogDeleteView(DeleteView):
+class BlogDeleteView(DeleteView, PermissionRequiredMixin):
     model = Blog
+    permission_required = 'catalog.delete_blog'
     success_url = reverse_lazy('catalog:blog_list')
 
     def get_context_data(self, **kwargs):
