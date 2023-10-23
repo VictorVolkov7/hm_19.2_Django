@@ -31,29 +31,37 @@
         </header>
         <div class="row">
             {% for object in object_list %}
-                <div class="col-6 mt-3">
-                    <div class="card h-100">
-                        <img src="{% path_tag object.preview %}" alt="..."/>
-                        <div class="card-body">
-                            <h5 class="card-title">{{ object.name }}</h5>
-                            <p class="card-text">
-                                {{ object.title|slice:100 }}...
-                            </p>
-                            <p class="card-text">
-                                {{ object.price }} ₽
-                            </p>
-                            {% for active_version in object.version_set.all %}
-                                {% if active_version.is_active %}
-                                    <p class="text-muted">
-                                        Версия: {{ active_version.version_number }}
-                                    </p>
+                {% if object.is_published or perms.catalog.set_is_published %}
+                    <div class="col-6 mt-3">
+                        <div class="card h-100">
+                            <img src="{% path_tag object.preview %}" alt="..."/>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ object.name }}</h5>
+                                <p class="card-text">
+                                    {{ object.title|slice:100 }}...
+                                </p>
+                                <p class="card-text">
+                                    {{ object.price }} ₽
+                                </p>
+                                {% for active_version in object.version_set.all %}
+                                    {% if active_version.is_active %}
+                                        <p class="text-muted">
+                                            Версия: {{ active_version.version_number }}
+                                        </p>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if object.owner %}
+                                    <p class="text-muted">Владелец: {{ object.owner }}</p>
+                                {% else %}
+                                    <p class="text-muted">Владелец: -</p>
                                 {% endif %}
-                            {% endfor %}
-                            <li>{{ object.category }}</li>
-                            <a href="{% url 'catalog:product_detail' object.pk %}" class="btn btn-primary float-right">Купить</a>
+                                <li>{{ object.category }}</li>
+                                <a href="{% url 'catalog:product_detail' object.pk %}"
+                                   class="btn btn-primary float-right">Купить</a>
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% endif %}
             {% endfor %}
         </div>
     </div><!-- /container -->
