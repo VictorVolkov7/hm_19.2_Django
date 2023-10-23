@@ -5,7 +5,7 @@
     <div class="jumbotron">
         <div class="container">
             <h1 class="display-3">Важное о главном</h1>
-            {% if user.is_authenticated %}
+            {% if perms.catalog.add_blog %}
                 <a href="{% url 'catalog:blog_create' %}" class="btn btn-outline-primary">Добавить публикацию</a>
             {% endif %}
         </div>
@@ -41,10 +41,12 @@
                         <div class="card-footer">
                             <div class="btn-group float-right">
                                 <a href="{% url 'catalog:blog_detail' object.slug %}" type="button"
-                                       class="btn btn-primary btn-outline-primary">View</a>
-                                {% if user.is_authenticated %}
+                                   class="btn btn-primary btn-outline-primary">View</a>
+                                {% if perms.catalog.change_blog %}
                                     <a href="{% url 'catalog:blog_update' object.slug %}" type="button"
                                        class="btn btn-primary btn-outline-primary">Edit</a>
+                                {% endif %}
+                                {% if perms.catalog.delete_blog %}
                                     <a href="{% url 'catalog:blog_delete' object.slug %}" type="button"
                                        class="btn btn-primary btn-outline-danger">Delete</a>
                                 {% endif %}

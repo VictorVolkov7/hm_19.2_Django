@@ -21,8 +21,8 @@ product_urlpatterns = [
 
 blog_urlpatterns = [
     path('blog/', BlogListView.as_view(), name='blog_list'),
-    path('blog/<slug:slug>/', BlogDetailView.as_view(), name='blog_detail'),
     path('blog/create/', never_cache(BlogCreateView.as_view()), name='blog_create'),
+    path('blog/<slug:slug>/', BlogDetailView.as_view(), name='blog_detail'),
     path('blog/edit/<slug:slug>/', never_cache(BlogUpdateView.as_view()), name='blog_update'),
     path('blog/delete/<slug:slug>/', BlogDeleteView.as_view(), name='blog_delete'),
 ]

@@ -53,9 +53,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.cache.UpdateCacheMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
+    # 'django.middleware.cache.UpdateCacheMiddleware',
+    # 'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -85,8 +84,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'safyromarket',
-        'USER': 'postgres',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('PSQL_PASS'),
     }
 }
@@ -150,6 +149,7 @@ EMAIL_HOST_PASSWORD = os.getenv('GMAIL_PASS')
 AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = 'login/'
 
 SITE_ID = 1
 
